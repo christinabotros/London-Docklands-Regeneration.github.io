@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset='utf-8' />
+    <title>Population change in London by Boroughs</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js"></script>
+    <script charset="utf-8" src="https://d3js.org/d3.v4.min.js"></script>
+    <script charset="utf-8" src="https://cdnjs.cloudflare.com/ajax/libs/dimple/2.3.0/dimple.latest.min.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+    
+
+
+    <style type="text/css">
+        body { margin:0; padding:0; }
+        #chartContainer {width: 400px; margin: auto; margin-top: 0px; }
+        #chartContainer p {margin-left: 0px; margin-bottom: 0px; margin-top: 0; padding: 0;}
+        #charttitle {font: bold 16px  Verdana, sans-serif;}
+        #map { position:absolute; top:0; bottom:0; width:100%; height: 100%;}
+        
+    
+        
+        
+         
+    
+    .map-overlay {
+        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        position: absolute;
+        width: 400px;
+        min-width: 360px;
+        top: 0;
+        left: 0;
+        padding: 10px;
+    }
+
+    .map-overlay .map-overlay-inner {
+        background-color: #777;
+        box-shadow:0 1px 2px rgba(0, 0, 0, 0.20);
+        border-radius: 3px;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-opacity: 0.7;
+    }
+        
+    
+
+    .map-overlay table {
+        border: none;
+        width: 100%;
+    }
+
+    .map-overlay h2 {
+        line-height: 24px;
+        display: block;
+        margin: 0 0 10px;
+    }
+
+    .map-overlay label {
+        font: 18px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        display: block;
+        vertical-align: middle;
+        margin: 0 0 0 10px;
+        padding: 0;
+    }
+
+    .map-overlay .legend .bar {
+        height: 10px;
+        width: 100%;
+        background: linear-gradient(to right, #ffff80, #ff1a1a);
+    }
+
+    .map-overlay input {
+        background-color: transparent;
+        display: inline-block;
+        width: 100%;
+        min-width: 220px;
+        position: relative;
+        margin: 6px 0 0 0;
+        cursor: ew-resize;
+    }
+
+    .map-overlay p.credit {
+        margin: 0;
+        padding: 0;
+    }
+
+    .mapboxgl-popup {
+        max-width: 400px;
+        min-width: 180px;
+        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        padding: 0;
+        margin: 0,0,0,20px;
+    }
+
+    .mapboxgl-popup-tip-container {
+        width:0px;
+        height:0px;
+        margin:0 auto;
+        position:relative;
+    }
+
+    .mapboxgl-popup-tip {
+        width:0;
+        height:0;
+        margin:0;
+        border-left:0 solid transparent;
+        border-right:0 solid transparent;
+        border-top:0 solid transparent;
+        box-shadow:none;
+    }
+    
+    .map-overlay #LAdata {
+		    margin: 0px;
+            border: solid 1px #6a6a6a;
+           border-radius: 3px;
+            background-color: #8b8b8b;
+		}
+
+    .map-overlay #LAdata h4 {
+            line-height: 13px;
+	        font: bold 11px Verdana, Arial, sans-serif;
+		    display: block;
+		    margin: 0;
+            padding: 6px 10px 0px 10px;
+            color: #333;
+		}
+        
+        
+    </style>
+</head>
+
+<body>
+
+<div id='map'></div>
+    
+<div class='map-overlay top'>
+    <div class='map-overlay-inner'>
+        <h2>Average population in Boroughs by years</h2>
+		<table><tr><td>
+        <input id='slider' type='range' min='0' max='4' step='1' value='0' list='tickmarks' />
+        <datalist id="tickmarks">
+		  <option value="0" label="1971">
+		  <option value="1" label="1981">
+		  <option value="2" label="1991">
+		  <option value="3" label="2001">
+		  <option value="4" label="2011">
+		  </datalist>
+		 </td>
+		 <td>
+		  <label id='year'>1971</label>
+         </td>
+         </tr></table>
+         <div id="legend" class="legend">
+         <div class="bar"></div>
+         <div>Population (thousand)</div>
+      </div>
+    </div>
+      <div id="LAdata">
+            <h2 id="laname">Hover over a Borough</h2>
+                <div id="LAchart1"></div>
+            </div>
+    
+    </div>
+    
+    
+    
+    
+   
+<script>
+        
+     
+    
+    mapboxgl.accessToken = 'pk.eyJ1IjoianVuemhlZ2FuIiwiYSI6ImNrazVhcjJxcTF0M3Uybm81OWsyZTNxZ2QifQ.Xu6yjTnwUuokW9O0ni9gSg'; // Mapbox Public Access token here
+
+    // Load a new map in the 'map' HTML div
+    var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/junzhegan/ckp16e6o70s6w18pehw7f0zkr', // stylesheet location
+    center: [-0.25, 51.5],// starting position [lng, lat]
+    zoom: 10 // starting zoom
+    });
+    
+    
+    // Create an array of the available data months
+    var years = [
+        '1971',
+        '1981',
+        '1991',
+        '2001',
+        '2011'
+        ];
+
+    map.on('load', function() {
+
+
+            // This is the main function that runs when changes the year data 
+            function setYear(year) {
+                
+                document.getElementById('year').textContent = years[year];  // Set the label to the correct year
+
+                var pp = map.getPaintProperty('Population','circle-radius');
+
+                console.log(pp);
+                pp.property = "pop" + years[year];  // update the pp circle-radius to the new column set by the user
+
+                map.setPaintProperty('Population','circle-radius',pp);
+
+                console.log(map.getPaintProperty('Population','circle-radius'));
+
+                var yearcol = "pop" + String(years[year]);
+                var textfield = "{" + yearcol + "}k";
+
+                console.log(textfield);
+
+                map.setLayoutProperty('labels', 'text-field', textfield); // update the labels layer to the new column
+                var filters = ['>', yearcol, 0]; // set up the condition, showing all positive cases
+                map.setFilter('labels', filters);
+            }
+        
+        // Add the proportional circle layer to the map
+            map.addLayer({
+                    id: 'Population',
+                    type: 'circle',
+                    source: {
+                      type: 'vector',
+                      url: 'mapbox://junzhegan.ap0wuxmv' // Your Mapbox tileset Map ID
+                    },
+                    'source-layer': 'population-05wdce', // name of tilesets
+                    'layout': {
+                        'visibility': 'visible'
+                    },
+                    paint: {
+                        'circle-color': [
+                        'interpolate',
+                        ['linear'],
+                        ['get', 'pop1971'],
+                        200,
+                        '#ffff80',
+                        400,
+                        '#ff1a1a'
+                        ],    
+                        'circle-opacity': 0.95,
+                        'circle-stroke-width': {
+                    stops: [[8, 0.5], [13, 2], [16, 3]]
+                    },
+                        'circle-stroke-color': '#000',
+                        'circle-stroke-opacity': 1,
+                        'circle-radius': {
+                            property: 'pop1971',
+                            stops: [
+                                [{zoom: 10, value: 50}, 8],
+                                [{zoom: 10, value: 300}, 40],
+                                [{zoom: 14, value: 50}, 32],
+                                [{zoom: 14, value: 300}, 160],
+                                [{zoom: 18, value: 50}, 64],
+                                [{zoom: 18, value: 300}, 320],
+                                ]
+                        }}
+                  });
+        
+
+        
+         // Add the label layer to the map
+            map.addLayer({
+                'id': 'labels',
+                'type': 'symbol',
+                'source': 'Population',
+                'source-layer': 'population-05wdce', // name of tilesets
+                'layout': {
+                    'text-field': '{pop1971}k',
+                    'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+                    'text-size': {
+                         stops: [[8, 6], [10, 11], [12, 20], [16, 30]]
+                     }
+                },
+                'paint': {
+                    'text-color': 'rgba(0,0,0,0.6)'
+                }
+                });
+        
+            var filters = ['>', 'pop1971', 0];
+            map.setFilter('labels', filters);
+
+            var prevyear = 0;
+        
+            document.getElementById('slider').addEventListener('input', function(e) {
+                  var year = parseInt(e.target.value);
+                  setYear(year);
+                  });
+        
+            var mypopup = new mapboxgl.Popup({offset:[150,50],closeButton: false});
+        
+            map.on('mouseover', 'Population', function (e) {
+                    mypopup
+                        .setLngLat(e.features[0].geometry.coordinates)
+                        .setHTML("<h3>" + e.features[0].properties.CityName + "</h3>1971: " + e.features[0].properties.pop1971 + "<br />1981: " + e.features[0].properties.pop1981 + "<br />1991: " + e.features[0].properties.pop1991 + "<br />2001: " + e.features[0].properties.pop2001 + "<br />2011: " + e.features[0].properties.pop2011)
+                        .addTo(map);
+                    
+                        
+                });
+           
+        
+        
+            // Change the cursor to a pointer when the mouse is over the stations layer.
+            map.on('mouseenter', 'Population', function () {
+                  map.getCanvas().style.cursor = 'pointer';
+            });
+
+            // Change it back to a pointer when it leaves and remove the popup window.
+            map.on('mouseleave', 'Population', function () {
+                map.getCanvas().style.cursor = '';
+                mypopup.remove();
+            });
+            
+        map.addLayer({
+                        id: 'Boroughs',
+                        type: 'fill',
+                        source: {
+                          type: 'vector',
+                          url: 'mapbox://junzhegan.4uyupc5h' //Your Mapbox tileset Map ID
+                        },
+                        'source-layer': 'pop_Bor-bmvay0', // name of tilesets
+                        'layout': {
+                            'visibility': 'visible'
+                        },
+                        paint: {
+                            'fill-color': '#fff',
+                            'fill-opacity': 0
+                            }
+                      });
+                        
+        
+        map.addLayer({
+                        id: 'lahighlight',
+                        type: 'line',
+                        source: {
+                          type: 'vector',
+                          url: 'mapbox://junzhegan.4uyupc5h' //Your Mapbox tileset Map ID
+                        },
+                        'source-layer': 'pop_Bor-bmvay0', // name of tilesets
+                        'layout': {
+                            'visibility': 'visible'
+                        },
+                        paint: {
+                            'line-color': '#f5f5f1',
+                            'line-opacity': 0.7,
+                            'line-width': 1.5
+                            },
+                        filter: ['==','FID_','-1']
+                      });
+          
+        
+        var populationData;
+        var previousID=-1;
+        var ladata1 = [];
+        
+        var chartcolors = [
+            new dimple.color("#54aae3","#54aae3",1),
+            new dimple.color("#d53e4f","#d53e4f",1),
+            new dimple.color("#fdbf6f","#fdbf6f",1),
+            new dimple.color("#66c2a5","#66c2a5",1)
+        ];
+        
+        var textid;
+    
+            function labelChart (shape, ladata, chartsvg, textclass) {
+
+                // Get the shape as a d3 selection
+        textid = textid + 1;
+        var s = d3.select(shape),
+        rect = {
+                x: parseFloat(s.attr("x")),
+                y: parseFloat(s.attr("y")),
+                width: parseFloat(s.attr("width")),
+                height: parseFloat(s.attr("height"))
+                };
+      
+                         var modeLabel = ladata.aggField[0].substring(2,ladata.aggField[0].length-1);
+
+                          // Add a text label for the value
+                          chartsvg.append("text")
+                            // Position in the centre of the shape (vertical position is
+                            // manually set due to cross-browser problems with baseline)
+                            .attr("id", "text"+textid)
+                            .attr("class", textclass)
+                            .attr("x", rect.x + rect.width / 2)
+                            .attr("y", rect.y + rect.height / 2 + 10.5)
+                            // Centre align
+                            .style("text-anchor", "middle")
+                            .style("font-size", "11px")
+                            .style("font-family", "sans-serif")
+                            // Make it a little transparent to tone down the black
+                            .style("opacity", 0.6)
+                            // Prevent text cursor on hover and allow tooltips
+                            .style("pointer-events", "none")
+                            // Format the number
+                            .text(d3.format(",.1f")(ladata.xValue) + "%");
+
+                            if (rect.width >= 30) {
+                                  chartsvg.append("text")
+                                    // Position in the centre of the shape (vertical position is
+                                    // manually set due to cross-browser problems with baseline)
+                                    .attr("id", "textmode" + textid)
+                                    .attr("class", textclass)
+                                    .attr("x", rect.x + rect.width / 2)
+                                    .attr("y", rect.y + rect.height / 2 - 3)
+                                    // Centre align
+                                    .style("text-anchor", "middle")
+                                    .style("font-size", "10px")
+                                    // .style("font-family", "sans-serif")
+                                    // Make it a little transparent to tone down the black
+                                    .style("opacity", 0.6)
+                                    // Prevent text cursor on hover and allow tooltips
+                                    .style("pointer-events", "none")
+                                    // Format the number
+                                      .text(modeLabel);
+                            }
+
+               }    
+
+        
+        var lachart1svg = dimple.newSvg("#LAchart1", 400, 50);
+        var LAchart1 = new dimple.chart(lachart1svg, ladata1);
+        LAchart1.ease = "circle";
+        LAchart1.defaultColors = chartcolors;
+        LAchart1.setBounds(0, 0, 390, 40);
+        var LAchart1Xaxis = LAchart1.addPctAxis("x", "population change");
+        var LAchart1Yaxis = LAchart1.addCategoryAxis("y", "name");
+        var LAchart1Series = LAchart1.addSeries(["column","order"], dimple.plot.bar);
+        LAchart1Series.addOrderRule("order");
+        LAchart1Yaxis.hidden = true;
+        LAchart1Xaxis.showGridlines = false;
+        LAchart1Xaxis.hidden = true;
+        
+                
+        populationData = d3.csv("populationALL.csv", function(data) {
+            
+                      
+                      map.on('mousemove', function(e) {
+                              var la = map.queryRenderedFeatures(e.point, {
+                                layers: ['Boroughs']
+                              });
+                   
+                        if (la.length==1) {
+                            
+                            if (la[0].id!=previousID) {
+                                
+                                map.getCanvas().style.cursor = 'pointer';
+
+                                previousID=la[0].id;
+                                map.setFilter('lahighlight', ['==','FID_',la[0].id]);
+                                console.log(la[0].properties.Area);
+                                document.getElementById('laname').innerHTML = "Population change by percentage in " + la[0].properties.CityName;
+                                console.log(la[0].id);
+                                console.log(la)
+                                                               
+                                var laindex = previousID - 1;
+                                
+                                ladata1.length = 0;
+                                
+                                
+                
+                
+                ladata1.push({'name': 1, 'column': ' y1981 ', 'population change': parseFloat(data[laindex].pec1981), 'order':1});
+                ladata1.push({'name': 1, 'column': ' y1991 ', 'population change': parseFloat(data[laindex].pec1991), 'order':2});
+                ladata1.push({'name': 1, 'column': ' y2001 ', 'population change': parseFloat(data[laindex].pec2001), 'order':3});
+                ladata1.push({'name': 1, 'column': ' y2011 ', 'population change': parseFloat(data[laindex].pec2011), 'order':4});
+                                
+                                textid = 0;
+                                
+                                LAchart1Series.afterDraw = function (shape, ladata) {
+                                labelChart(shape, ladata, lachart1svg, "la");
+                                };
+                                var d3select = d3.selectAll("text.la");
+                                d3select.remove();
+                                                  
+                                LAchart1.draw(400);
+                                
+                                
+                                } else if (la[0].id==previousID) {
+            //                            console.log("Same feature");                                
+                            }
+                      }
+                          else if (previousID>=0) {
+                                map.getCanvas().style.cursor = '';
+                                map.setFilter('lahighlight', ['==','FID_','-1']);
+                                previousID = -1;
+                                console.log('No features');
+                                document.getElementById('laname').innerHTML = "Hover over a Borough";
+                            }   
+                            
+                            });
+        });
+
+    });
+    
+    
+    
+  </script>
+
+</body>
+</html>
+    
+
+        
+
+

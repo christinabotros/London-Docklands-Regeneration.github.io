@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Building age on LSOA</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
+    
+    <script charset="utf-8" src="https://d3js.org/d3.v3.min.js"></script>
+    <script charset="utf-8" src="https://cdnjs.cloudflare.com/ajax/libs/dimple/2.1.2/dimple.latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+    
+    
+    <style type="text/css">
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+
+        
+        #title-panel {
+            position: absolute;
+            left: 20px;
+            top: 10px;
+            z-index: 6;
+            border-radius: 6px;
+            border-left: 1px #f4f4f4;
+            border-right: 1px #f4f4f4;
+            border-top: 1px #f4f4f4;
+            border-bottom: 1px #f4f4f4;
+		    background-color: #f4f4f4;
+            background-opacity: 0.7;
+            width: 450px;
+        }
+        
+        h1 {
+            padding: 2px 0 0 0;
+            margin: 0 12px 0 12px;
+            font: bold 28px Calibri,Arial, sans-serif;
+            color: #222;
+            letter-spacing:-2px;
+        }
+
+        #title-panel p {
+            padding: 2px 0 0 0;
+            margin: 0 12px 10px 12px;
+            font: 14px Calibri,Arial, sans-serif;
+            color: #222;
+        }
+        
+        #mode-panel {
+		    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+		    position: absolute;
+		    width: 500px;
+		    top: 0;
+		    right: 0;
+		    padding: 5px;
+		}
+
+		#mode-panel-inner {
+		    background-color: #CDCDCD;;
+            opacity: 0.95;
+		    box-shadow:0 1px 2px rgba(0, 0, 0, 0.20);
+		    border-radius: 3px;
+		    padding: 0 0 5px 0;
+            margin: 0;
+            min-height: 200px;
+            border: solid 1px #aaa;
+		}
+
+		#mode-panel-inner h2 {
+		    line-height: 16px;
+	        font: bold 15px Verdana, Arial, sans-serif;
+            color: #111;
+		    display: block;
+            border-radius: 3px 3px 0 0;
+		    margin: 0;
+            padding: 5px 5px 5px 5px;
+            background-color: #f4f4f4;
+            border-bottom: solid 1px #f4f4f4;
+        }
+        
+		#mode-panel-inner h3 {
+	        font: bold 14px Verdana, Arial, sans-serif;
+		    line-height: 24px;
+		    display: block;
+		    margin: 0;
+            padding: 5px 5px 5px 5px;
+            color: #222;
+        }
+
+		#mode-panel-inner #GBdata {
+		    margin: 15px;
+            border: solid 1px #f4f4f4;
+           border-radius: 3px;
+            background-color: #f4f4f4;
+		}
+        
+        #mode-panel-inner #GBdetails {
+		    margin: 5px 0 15px 10px;
+		}
+        
+
+		#mode-panel-inner #LAdata {
+		    margin: 15px;
+            border: solid 1px #f4f4f4;
+           border-radius: 3px;
+            background-color: #f4f4f4;
+		}
+
+		#mode-panel-inner #LAdata h4 {
+            line-height: 13px;
+	        font: bold 11px Verdana, Arial, sans-serif;
+		    display: block;
+		    margin: 0;
+            padding: 5px;
+            color: #333;
+		}
+        
+            #mode-panel-inner #Colourdata {
+		    margin: 15px;
+            border: solid 1px #f4f4f4;
+            border-radius: 3px;
+            background-color: #f4f4f4;
+		}
+
+		#mode-panel-inner #Colourdata h6 {
+
+	        font: bold 14px Verdana, Arial, sans-serif;
+		    line-height: 24px;
+		    display: block;
+		    margin: 0;
+            padding: 6px 10px 0px 10px;
+            color: #222;
+        
+        }
+        
+		#mode-panel-inner #LAdata .total-building {
+	        font: bold 10px Verdana, Arial, sans-serif;
+            display: inline;
+            text-align: right;
+            float: right;
+		    margin: 7px 20px 0 0;
+            padding: 0;
+		}
+        
+        #mode-panel-inner #LAdata .total-building p {
+	        font: bold 10px Verdana, Arial, sans-serif;
+		    display: inline;
+            text-align: right;
+            float: right;
+		    margin: 0;
+            padding: 0;
+		}
+
+		#mode-panel-inner #LAdetails {
+		    margin: 5px;
+		}
+        
+		#mode-panel-inner h5 {
+		    line-height: 14px;
+            font-size: 12px;
+		    display: block;
+		    margin: 0;
+            padding: 5px;
+            color: #333;
+		}
+
+		#mode-panel-inner p {
+            margin: 0;
+            padding: 0;
+		}
+        
+        
+
+
+        
+    </style>
+    
+</head>
+    
+<body>
+
+<div id='map'></div>
+
+<div id="title-panel">
+
+    <h1>Building age in London: <span style="color:#5BF;"></span></h1>
+    <p>The colour on this map represents the mode building period in London by LSOA, the mode is selected by calculating the proportion of each age group of total number of building and picking the one with highest proportion.</p>
+    <p>Dwelling by Property Build Period and Type,LSOA @Valuation Office Agency. <a href="https://data.london.gov.uk/dataset/property-build-period-lsoa">Dwellings</a>, LSOA.</p>
+
+</div>
+    
+    
+<div id='mode-panel'>
+    
+    <div id='mode-panel-inner'>
+
+        <div id="GBdata">
+            <h3>Distribution of building age in the Docklands</h3>
+            <div id="GBchart1"></div>
+            
+            <div id="GBdetails">
+                <h5>Percentage of Dwellings across all age %-</h5>
+                <p id="dlallages">Pre1900: 5.4, 1900-1918: 1.2, 1919-1929: 1.9, 1930-1939: 2.8, 1945-1954: 6.1, 1955-1964: 7.1, 1965-1972: 8.2, 1973-1982: 10.0, 1983-1992: 8.2, 1993-1999: 9.5, 2000-2009: 22.0, after2010: 16.0, Unknown: 1.6</p>
+            </div>
+            
+        </div>    
+        
+        <div id="LAdata">
+            <h3 id="laname">Hover over a LSOA</h3>
+
+            <div id="total-building" class="total-building"><p>Total Buildings:</p></div>
+            <div id="LAchart1"></div>
+
+            
+            
+            <div id="LAdetails">
+                <h5>Percentage of Dwellings across all age % <span style="font-weight:normal">(all buidings accounted)</span>-</h5>
+                <p id="laallmodes"> <b>pre1900:</b> xx, <b>1900-1918:</b> xx, <b>1919-1929:</b> xx, <b>1930-1939:</b> xx, <b>1945-1954:</b>b> xx, <b>1955-1964:</b> xx, <b> 1965-1972:</b> xx, <b>1973-1982:</b> xx, <b> 1983-1992:</b> xx, <b>1993-1999:</b> xx, <b>2000-2009:</b> xx, <b>after2010:</b> xx, <b>Unknown:</b> xx</p>
+            </div>
+
+        </div>
+        
+        <div id="Colourdata">
+            
+            <h3 style="font-family: 'Calibri'; text-align:justify; font-size: 17px">Indicator of building age by colour</h3>
+            <div id="Before 1900"> <i class="fas fa-square" style = "font-size 15px; color: #b30000; padding-left: 10px"></i> Before 1900</div>
+                <div id="1900-1918"><i class="fas fa-square" style = "font-size 15px; color: #d7301f; padding-left: 10px"></i> 1900-1918</div>
+				<div id="1919-1929"><i class="fas fa-square" style = "font-size 15px; color: #ef6548; padding-left: 10px"></i> 1919-1929</div>
+                <div id="1930-1939"><i class="fas fa-square" style = "font-size 15px; color: #fc8d59; padding-left: 10px"></i> 1930-1939</div>
+                <div id="1945-1954"><i class="fas fa-square" style = "font-size 15px; color: #fdbb84; padding-left: 10px"></i> 1945-1954</div>
+				<div id="1955-1964"><i class="fas fa-square" style = "font-size 15px; color: #fdd49e; padding-left: 10px"></i> 1955-1964</div>
+				<div id="1965-1972"><i class="fas fa-square" style = "font-size 15px; color: #fee8c8; padding-left: 10px"></i> 1965-1972</div>
+				<div id="1973-1982"><i class="fas fa-square" style = "font-size 15px; color: #f7fbff; padding-left: 10px"></i> 1973-1982</div>
+				<div id="1983-1992"><i class="fas fa-square" style = "font-size 15px; color: #c6dbef; padding-left: 10px"></i> 1983-1992</div>
+				<div id="1993-1999"><i class="fas fa-square" style = "font-size 15px; color: #6baed6; padding-left: 10px"></i> 1993-1999</div>
+				<div id="2000-2009"><i class="fas fa-square" style = "font-size 15px; color: #4292c6; padding-left: 10px"></i> 2000-2009</div>
+                <div id="2010-2015"><i class="fas fa-square" style = "font-size 15px; color: #2171b5; padding-left: 10px"></i> 2010-2015</div>
+                <div id="Unknown"><i class="fas fa-square" style = "font-size 15px; color: #000000; padding-left: 10px"></i> No available data</div>
+            
+            
+
+        
+    </div>
+</div>
+</div>
+    
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoianVuemhlZ2FuIiwiYSI6ImNrazVhcjJxcTF0M3Uybm81OWsyZTNxZ2QifQ.Xu6yjTnwUuokW9O0ni9gSg'; // Put your Mapbox Public Access token here
+
+    // Load a new map in the 'map' HTML div
+    var map = new mapboxgl.Map({
+    container: 'map', // container id
+    hash: true,
+    style: 'mapbox://styles/junzhegan/ckoyoazov2pr418nriijfjn6o', // stylesheet location
+    center: [0.158, 51.5336], // starting position [lng, lat] /
+    zoom: 8.85 // starting zoom /
+    });
+    
+var nav = new mapboxgl.NavigationControl();
+map.addControl(nav, 'top-left');    
+
+    
+map.on('load', function() {
+
+
+                map.addLayer({
+                        id: 'Building-age',
+                        type: 'fill',
+                        source: {
+                          type: 'vector',
+                          url: 'mapbox://junzhegan.6wjl9kkn' // Your Mapbox tileset Map ID
+                        },
+                        'source-layer': 'age_type-as56c1', // name of tilesets
+                        'layout': {
+                            'visibility': 'visible'
+                        },
+                        paint: {
+                            'fill-color': '#fff',
+                            'fill-opacity': 0
+                            }
+                      });
+
+                map.addLayer({
+                        id: 'lahighlight',
+                        type: 'line',
+                        source: {
+                          type: 'vector',
+                          url: 'mapbox://junzhegan.6wjl9kkn' //Your Mapbox tileset Map ID
+                        },
+                        'source-layer': 'age_type-as56c1', // name of tilesets
+                        'layout': {
+                            'visibility': 'visible'
+                        },
+                        paint: {
+                            'line-color': '#f5f5f1',
+                            'line-opacity': 0.7,
+                            'line-width': 1.5
+                            },
+                        filter: ['==','FID_','-1']
+                      });
+  
+                var agetypeData;
+                var previousID=-1;
+                var ladata1 = [];
+                
+                
+                    var chartcolors = [
+                    new dimple.color("#d53e4f","#d53e4f",1),
+                    new dimple.color("#fdae61","#fdae61",1),
+                    new dimple.color("#fee08b","#fee08b",1),
+                    new dimple.color("#abdda4","#abdda4",1),
+                    new dimple.color("#66c2a5","#66c2a5",1),
+                    new dimple.color("#3288bd","#3288bd",1)
+                ];
+
+                var gbdata = [];
+                var textid;
+    
+                function labelChart (shape, ladata, chartsvg, textclass) {
+
+                // Get the shape as a d3 selection
+                textid = textid + 1;
+                var s = d3.select(shape),
+                  rect = {
+                    x: parseFloat(s.attr("x")),
+                    y: parseFloat(s.attr("y")),
+                    width: parseFloat(s.attr("width")),
+                    height: parseFloat(s.attr("height"))
+                  };
+
+                  //console.log(ladata);
+                  var modeLabel = ladata.aggField[0].substring(2,ladata.aggField[0].length-1);
+
+                          // Add a text label for the value
+                          chartsvg.append("text")
+                            // Position in the centre of the shape (vertical position is
+                            // manually set due to cross-browser problems with baseline)
+                            .attr("id", "text"+textid)
+                            .attr("class", textclass)
+                            .attr("x", rect.x + rect.width / 2)
+                            .attr("y", rect.y + rect.height / 2 + 10.5)
+                            // Centre align
+                            .style("text-anchor", "middle")
+                            .style("font-size", "11px")
+                            .style("font-family", "sans-serif")
+                            // Make it a little transparent to tone down the black
+                            .style("opacity", 0.6)
+                            // Prevent text cursor on hover and allow tooltips
+                            .style("pointer-events", "none")
+                            // Format the number
+                            .text(d3.format(",.1f")(ladata.xValue * 100) + "%");
+
+                            if (rect.width >= 30) {
+                                  chartsvg.append("text")
+                                    // Position in the centre of the shape (vertical position is
+                                    // manually set due to cross-browser problems with baseline)
+                                    .attr("id", "textmode" + textid)
+                                    .attr("class", textclass)
+                                    .attr("x", rect.x + rect.width / 2)
+                                    .attr("y", rect.y + rect.height / 2 - 3)
+                                    // Centre align
+                                    .style("text-anchor", "middle")
+                                    .style("font-size", "10px")
+                                    // .style("font-family", "sans-serif")
+                                    // Make it a little transparent to tone down the black
+                                    .style("opacity", 0.6)
+                                    // Prevent text cursor on hover and allow tooltips
+                                    .style("pointer-events", "none")
+                                    // Format the number
+                                      .text(modeLabel);
+                            }
+
+               }    
+    
+                gbdata.push({'name': 1, 'column': ' PPre1900 ', 'percent': 0.054, 'order':1});
+                gbdata.push({'name': 1, 'column': ' EEdwardian&WWI ', 'percent': 0.012, 'order':2});  
+                gbdata.push({'name': 1, 'column': ' IInterwar-Expansion ', 'percent': 0.047, 'order':3});
+                gbdata.push({'name': 1, 'column': ' PPost-War ', 'percent': 0.214, 'order':4});
+                gbdata.push({'name': 1, 'column': ' LLate-20s ', 'percent': 0.277, 'order':5});
+                gbdata.push({'name': 1, 'column': ' AAfter-2000 ', 'percent': 0.396, 'order':6});
+    
+                var GBchart1svg = dimple.newSvg("#GBchart1", 450, 50);
+                var GBchart1 = new dimple.chart(GBchart1svg, gbdata);
+                GBchart1.ease = "circle";
+                GBchart1.defaultColors = chartcolors;
+                GBchart1.setBounds(10, 0, 450, 50);
+                var GBchart1Xaxis = GBchart1.addPctAxis("x","percent");
+                var GBchart1Yaxis = GBchart1.addCategoryAxis("y", "name");
+                var GBchart1Series = GBchart1.addSeries(["column","order"], dimple.plot.bar);
+                GBchart1Series.addOrderRule("order");
+                GBchart1Yaxis.hidden = true;
+                GBchart1Xaxis.showGridlines = false;
+    
+                GBchart1.draw(400);
+    
+                GBchart1Series.afterDraw = function (shape, ladata) {
+
+                    labelChart(shape, ladata, GBchart1svg, "gb");
+                                                      
+                    };    
+    
+                var lachart1svg = dimple.newSvg("#LAchart1", 450, 50);
+                var LAchart1 = new dimple.chart(lachart1svg, ladata1);
+                LAchart1.ease = "circle";
+                LAchart1.defaultColors = chartcolors;
+                LAchart1.setBounds(10, 0, 450, 50);
+                var LAchart1Xaxis = LAchart1.addPctAxis("x","percent");
+                var LAchart1Yaxis = LAchart1.addCategoryAxis("y", "name");
+                var LAchart1Series = LAchart1.addSeries(["column","order"], dimple.plot.bar);
+                LAchart1Series.addOrderRule("order");
+                LAchart1Yaxis.hidden = true;
+                LAchart1Xaxis.showGridlines = false;
+                LAchart1Xaxis.hidden = true;
+    
+    
+                  agetypeData = d3.csv("age_type.csv", function(data) {
+                      
+                      map.on('mousemove', function(e) {
+                              var la = map.queryRenderedFeatures(e.point, {
+                                layers: ['Building-age']
+                              });
+                          
+                      if (la.length==1) {
+                            
+                            if (la[0].id!=previousID) {
+                                
+                                map.getCanvas().style.cursor = 'pointer';
+
+                                previousID=la[0].id;
+                                map.setFilter('lahighlight', ['==','FID_',la[0].id]);
+                                console.log(la[0].properties.Area);
+                                document.getElementById('laname').innerHTML = "Distribution of building age in: " + la[0].properties.Area;
+                                console.log(la[0].id);
+                                
+                                var laindex = previousID - 1;
+                                
+                                ladata1.length = 0;
+                                ladata1.push({'name': 1, 'column': ' PPre1900 ', 'percent': parseFloat(data[laindex].Por_1), 'order':1});
+                                ladata1.push({'name': 1, 'column': ' EEdwardian&WWI ', 'percent': parseFloat(data[laindex].Por_2), 'order':2});
+                                ladata1.push({'name': 1, 'column': ' IInterwar-Expansion ', 'percent': parseFloat(data[laindex].Por_14), 'order':3});  
+                                ladata1.push({'name': 1, 'column': ' PPost-War ', 'percent': parseFloat(data[laindex].Por_15), 'order':4});
+                                ladata1.push({'name': 1, 'column': ' LLate-20s ', 'percent': parseFloat(data[laindex].Por_16), 'order':5});
+                                ladata1.push({'name': 1, 'column': ' AAfter-2000 ', 'percent': parseFloat(data[laindex].Por_17), 'order':6});
+                        
+                                textid = 0;
+
+                                LAchart1Series.afterDraw = function (shape, ladata) {
+                                labelChart(shape, ladata, lachart1svg, "la");
+                                };
+                                
+                                var d3select = d3.selectAll("text.la");
+                                d3select.remove();
+                                                  
+                                LAchart1.draw(400);
+                                document.getElementById('total-building').innerHTML = "Total number of buildings: " + data[laindex].ALL_PROPERTIES ;
+                                document.getElementById('laallmodes').innerHTML = "pre1900: " + Math.round(data[laindex].Por_1 * 100) + ", 1900-1918: " + Math.round(data[laindex].Por_2 * 100) + ", 1919-1929: " +Math.round(data[laindex].Por_3 * 100) +", 1930-1939: " +Math.round(data[laindex].Por_4 * 100)+ ", 1945-1954: " + Math.round(data[laindex].Por_5 * 100)+ ", 1955-1964: " + Math.round(data[laindex].Por_6 * 100)+ ", 1965-1972: " + Math.round(data[laindex].Por_7 * 100)+ ", 1973-1982: " + Math.round(data[laindex].Por_8 * 100)+ ", 1983-1992: " + Math.round(data[laindex].Por_9 * 100)+ ", 1992-1999: " + Math.round(data[laindex].Por_10 * 100)+ ", 2000-2009: " +Math.round( data[laindex].Por_11 * 100)+ ", 2010-2015: " +Math.round( data[laindex].Por_12 * 100)+ ", Unknown: " +Math.round( data[laindex].Por_13 * 100);
+                
+                            } else if (la[0].id==previousID) {
+            //                            console.log("Same feature");                                
+                            }
+                      }else if (previousID>=0) {
+                                map.getCanvas().style.cursor = '';
+                                map.setFilter('lahighlight', ['==','FID_','-1']);
+                                previousID = -1;
+                                console.log('No features');
+                                document.getElementById('laname').innerHTML = "Hover over a LSOA";
+                            }   
+                            
+                            });
+                        
+                        
+                        
+                    });
+                             
+});
+                        
+    
+
+
+    
+</script>
+
+</body>
+</html>
+
