@@ -19,52 +19,55 @@
         
         #title-panel {
             position: absolute;
-            left: 0px;
+            left: 10px;
             top: 10px;
-            z-index: 6;
+            z-index: 9;
             border-radius: 6px;
-            border-left: 1px solid rgba(150,150,150,0.5);
-            border-right: 1px solid rgba(150,150,150,0.5);
-            border-top: 1px solid rgba(200,200,200,0.5);
-            border-bottom: 1px solid rgba(120,120,120,0.5);
-		    background-color: #777;
-            background-opacity: 0.7;
-            width: 440px;
+            border-left: 1px #aaa;
+            border-right: 1px #aaa;
+            border-top: 1px #aaa;
+            border-bottom: 1px #aaa;
+		    background-color: #f4f4f4;
+            background-opacity: 0.9;
+            width: 250px;
         }
         
         #color-indicator {
             position: absolute;
-            left: 0px;
+            left: 5px;
             bottom: 10px;
-            z-index: 6;
+            z-index: 9;
             border-radius: 6px;
-            border-left: 1px solid rgba(150,150,150,0.5);
-            border-right: 1px solid rgba(150,150,150,0.5);
-            border-top: 1px solid rgba(200,200,200,0.5);
-            border-bottom: 1px solid rgba(120,120,120,0.5);
-		    background-color: #777;
+            border-left: 5px #aaa;
+            border-right: 1px #aaa;
+            border-top: 1px #aaa;
+            border-bottom: 5px #aaa;
+		    background-color: #f4f4f4;
             background-opacity: 0.7;
-            width: 400px;
+            width: 135px;
+            font: 14px Calibri ;
+            margin-left: 10px; 
         }
         
-        h1 {
+        h3 {
             padding: 2px 0 0 0;
-            margin: 0 12px 0 12px;
-            font: bold 28px Calibri,Arial, sans-serif;
+            margin: 2px 12px 0 12px;
+            font: bold 23px Calibri;
             color: #222;
+            background-color: #f4f4f4;
             letter-spacing:-2px;
         }
 
         #title-panel p {
             padding: 2px 0 0 0;
-            margin: 0 12px 10px 12px;
-            font: 14px Calibri,Arial, sans-serif;
+            margin: 3px 12px 10px 12px;
+            font: 14px Calibri;
             color: #222;
         }
         
         
         #mode-panel {
-		    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+		    font: 12px/20px Calibri;
 		    position: absolute;
 		    width: 500px;
 		    top: 0;
@@ -73,7 +76,7 @@
 		}
 
 		#mode-panel-inner {
-		    background-color: #777;
+		    background-color: #aaa;
             opacity: 0.95;
 		    box-shadow:0 1px 2px rgba(0, 0, 0, 0.20);
 		    border-radius: 3px;
@@ -85,18 +88,18 @@
 
 		#mode-panel-inner h2 {
 		    line-height: 16px;
-	        font: bold 15px Verdana, Arial, sans-serif;
+	        font: bold 17px Calibri;
             color: #111;
 		    display: block;
             border-radius: 3px 3px 0 0;
 		    margin: 0;
             padding: 10px 10px 10px 20px;
-            background-color: #bbb;
+            background-color: #f4f4f4;
             border-bottom: solid 1px #bbb;
         }
         
 		#mode-panel-inner h3 {
-	        font: bold 14px Verdana, Arial, sans-serif;
+	        font: bold 14px Calibri;
 		    line-height: 24px;
 		    display: block;
 		    margin: 0;
@@ -106,9 +109,9 @@
 
 		#mode-panel-inner #GBdata {
 		    margin: 15px;
-            border: solid 1px #6a6a6a;
+            border: solid 1px #f4f4f4;
            border-radius: 3px;
-            background-color: #8b8b8b;
+            background-color: #f4f4f4;
 		}
         
         #mode-panel-inner #GBdetails {
@@ -118,9 +121,9 @@
 
 		#mode-panel-inner #LAdata {
 		    margin: 15px;
-            border: solid 1px #6a6a6a;
+            border: solid 1px #f4f4f4;
            border-radius: 3px;
-            background-color: #8b8b8b;
+            background-color: #f4f4f4;
 		}
 
 		#mode-panel-inner #LAdata h4 {
@@ -136,7 +139,7 @@
         
         
 		#mode-panel-inner #LAdata .total-building {
-	        font: bold 10px Verdana, Arial, sans-serif;
+	        font: bold 10px Calibri;
             display: inline;
             text-align: right;
             float: right;
@@ -145,7 +148,7 @@
 		}
         
         #mode-panel-inner #LAdata .total-building p {
-	        font: bold 10px Verdana, Arial, sans-serif;
+	        font: bold 10px Calibri;
 		    display: inline;
             text-align: right;
             float: right;
@@ -186,31 +189,28 @@
 
 <div id="title-panel">
 
-    <h1>Building age in London <span style="color:#5BF;"></span></h1>
-    <p>The colour on this map represents the mode building period in London by LSOA, the mode is selected by calculating the proportion of each age group of total number of building and picking the one with highest proportion.</p>
-    <p>Dwelling by Property Build Period and Type,LSOA @Valuation Office Agency. <a href="https://data.london.gov.uk/dataset/property-build-period-lsoa">Dwellings</a>, LSOA.</p>
+    <h3>Building age in London <span style="font-family: 'Calibri'; text-align:center; font-size: 15px; margin-left: 10px"></span></h3>
+    <p>The colour on this map represents the mode building period in London by LSOA, the mode is selected by calculating the proportion of each age group of total number of building and picking the one with highest proportion.<span style="font-family: 'Calibri'; text-align:justify-all; font-size: 13px; margin-left: 10px"></span></p>
+    <p><a href="https://data.london.gov.uk/dataset/property-build-period-lsoa"> Dwelling by Property Build Period and Type </a> at LSOA level. Available from the Valuation Office Agency (VOA).<span style="font-family: 'Calibri'; text-align:justify-all; font-size: 13px; margin-left: 10px"></span></p>
 
 </div>
     
 <div id="color-indicator">
-    
-    <h1>Color indicator for building period<span style="color:#5BF;"></span></h1>
-    <li id="Before 1900"> <i class="fas fa-heart" style = "font-size 10px; color: #b30000;"></i> Before 1900</li>
-    <li id="1900-1918"><i class="fas fa-heart" style = "font-size 10px; color: #d7301f;"></i> 1900-1918</li>
-	<li id="1919-1929"><i class="fas fa-heart" style = "font-size 10px; color: #ef6548;"></i> 1919-1929</li>
-    <li id="1930-1939"><i class="fas fa-heart" style = "font-size 10px; color: #fc8d59;"></i> 1930-1939</li>
-    <li id="1945-1954"><i class="fas fa-heart" style = "font-size 10px; color: #fdbb84;"></i> 1945-1954</li>
-	<li id="1955-1964"><i class="fas fa-heart" style = "font-size 10px; color: #fdd49e;"></i> 1955-1964</li>
-	<li id="1965-1972"><i class="fas fa-heart" style = "font-size 10px; color: #fee8c8;"></i> 1965-1972</li>
-	<li id="1973-1982"><i class="fas fa-heart" style = "font-size 10px; color: #f7fbff;"></i> 1973-1982</li>
-	<li id="1983-1992"><i class="fas fa-heart" style = "font-size 10px; color: #c6dbef;"></i> 1983-1992</li>
-	<li id="1993-1999"><i class="fas fa-heart" style = "font-size 10px; color: #6baed6;"></i> 1993-1999</li>
-	<li id="2000-2009"><i class="fas fa-heart" style = "font-size 10px; color: #4292c6;"></i> 2000-2009</li>
-    <li id="2010-2015"><i class="fas fa-heart" style = "font-size 10px; color: #2171b5;"></i> 2010-2015</li>
-    <li id="Unknown"><i class="fas fa-heart" style = "font-size 10px; color: #000000;"></i> Unknown</li>
-    
+    <h3 style="font-family: 'Calibri'; text-align:justify-all; font-size: 15px; margin-left: 10px">Key:</h3>
+            <div id="Before 1900"> <i class="fas fa-square" style = "font-size 15px; color: #b30000; padding-left: 10px"></i> Before 1900</div>
+            <div id="1900-1918"><i class="fas fa-square" style = "font-size 15px; color: #d7301f; padding-left: 10px"></i> 1900-1918</div>
+            <div id="1919-1929"><i class="fas fa-square" style = "font-size 15px; color: #ef6548; padding-left: 10px"></i> 1919-1929</div>
+            <div id="1930-1939"><i class="fas fa-square" style = "font-size 15px; color: #fc8d59; padding-left: 10px"></i> 1930-1939</div>
+            <div id="1945-1954"><i class="fas fa-square" style = "font-size 15px; color: #fdbb84; padding-left: 10px"></i> 1945-1954</div>
+			<div id="1955-1964"><i class="fas fa-square" style = "font-size 15px; color: #fdd49e; padding-left: 10px"></i> 1955-1964</div>
+			<div id="1965-1972"><i class="fas fa-square" style = "font-size 15px; color: #fee8c8; padding-left: 10px"></i> 1965-1972</div>
+			<div id="1973-1982"><i class="fas fa-square" style = "font-size 15px; color: #f7fbff; padding-left: 10px"></i> 1973-1982</div>
+			<div id="1983-1992"><i class="fas fa-square" style = "font-size 15px; color: #c6dbef; padding-left: 10px"></i> 1983-1992</div>
+			<div id="1993-1999"><i class="fas fa-square" style = "font-size 15px; color: #6baed6; padding-left: 10px"></i> 1993-1999</div>
+			<div id="2000-2009"><i class="fas fa-square" style = "font-size 15px; color: #4292c6; padding-left: 10px"></i> 2000-2009</div>
+            <div id="2010-2015"><i class="fas fa-square" style = "font-size 15px; color: #2171b5; padding-left: 10px"></i> 2010-2015</div>
+            <div id="Unknown"><i class="fas fa-square" style = "font-size 15px; color: #000000; padding-left: 10px"></i> No available data</div>
     </div>
-    
     
 <div id='mode-panel'>
     
@@ -218,18 +218,23 @@
         <h2>London Dwelling age</h2>
 
         <div id="GBdata">
-            <h3>Distribution of Building age in Dockland</h3>
+            <h4> Distribution of Building age in the London Docklands region </h4>
             <div id="GBchart1"></div>
             
             <div id="GBdetails">
-                <h5>Percentage of Dwellings across all age %-</h5>
+                <h5>Percentage of dwellings across all ages %-</h5>
                 <p id="dlallages">Pre1900: 5.4,     1900-1918: 1.2,     1919-1929: 1.9,     1930-1939: 2.8,     1945-1954: 6.1,     1955-1964: 7.1,     1965-1972: 8.2,     1973-1982: 10.0,     1983-1992: 8.2,     1993-1999: 9.5,     2000-2009: 22.0,     after2010: 16.0,     Unknown: 1.6</p>
             </div>
+            
+        <div>
+        <p class="cityfly">Zoom to: <a href="#" class="citylink" id="dockland">the London Docklands</a> &nbsp;
+             </p>
+        </div>
             
         </div>    
         
         <div id="LAdata">
-            <h3 id="laname">Hover over a LSOA</h3>
+            <h4 id="laname">Hover over a LSOA</h4>
 
             <div id="total-building" class="total-building"><p>Total Buildings:</p></div>
             <div id="LAchart1"></div>
@@ -265,8 +270,8 @@
     container: 'map', // container id
     hash: true,
     style: 'mapbox://styles/junzhegan/ckoyoazov2pr418nriijfjn6o', // stylesheet location
-    center: [0, 51.5], // starting position [lng, lat]
-    zoom: 10 // starting zoom
+    center: [0.197, 51.5336], // starting position [lng, lat] /
+    zoom: 9 // starting zoom /
     });
     
 var nav = new mapboxgl.NavigationControl();
@@ -458,7 +463,7 @@ map.on('load', function() {
                                 previousID=la[0].id;
                                 map.setFilter('lahighlight', ['==','FID_',la[0].id]);
                                 console.log(la[0].properties.Area);
-                                document.getElementById('laname').innerHTML = "Distribution of Building age/type in" + la[0].properties.Area;
+                                document.getElementById('laname').innerHTML = "Distribution of Building age/type in: " + la[0].properties.Area;
                                 console.log(la[0].id);
                                 console.log(la)
                                 
@@ -525,7 +530,27 @@ map.on('load', function() {
                              
 });
                         
-    
+       //Event listener for the zoom to buttons created using a for loop and switch case statement to set lat and long
+var x = document.getElementsByClassName('citylink');
+var i;
+		for (i = 0; i < x.length; i++) {
+			x[i].addEventListener('click', function(e) {
+
+				var lat,long;
+
+				switch(e.target.id) {
+                    case "dockland": long=0.03; lat=51.5; break;
+				
+				}
+
+				map.flyTo({
+					center: [long,lat],
+					zoom: 11,
+					speed: 0.3,
+					pitch: 50
+					});
+			});
+		}
 
 
     

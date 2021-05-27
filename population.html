@@ -37,7 +37,7 @@
     }
 
     .map-overlay .map-overlay-inner {
-        background-color: #777;
+        background-color: #aaa;
         box-shadow:0 1px 2px rgba(0, 0, 0, 0.20);
         border-radius: 3px;
         padding: 10px;
@@ -45,7 +45,12 @@
         background-opacity: 0.7;
     }
         
-    
+    .map-overlay .map-overlay-lower {
+            background-color: #aaa;
+            border-radius: 3px;
+            box-shadow:0 1px 2px rgba(0, 0, 0, 0.20);
+            top: 40px;
+        }
 
     .map-overlay table {
         border: none;
@@ -114,9 +119,9 @@
     
     .map-overlay #LAdata {
 		    margin: 0px;
-            border: solid 1px #6a6a6a;
+            border: solid 1px #aaa;
            border-radius: 3px;
-            background-color: #8b8b8b;
+            background-color: #aaa;
 		}
 
     .map-overlay #LAdata h4 {
@@ -138,7 +143,7 @@
     
 <div class='map-overlay top'>
     <div class='map-overlay-inner'>
-        <h2>Average population in Boroughs by years</h2>
+        <h2>Average population by Borough per decade between 1971 and 2011 </h2>
 		<table><tr><td>
         <input id='slider' type='range' min='0' max='4' step='1' value='0' list='tickmarks' />
         <datalist id="tickmarks">
@@ -155,19 +160,20 @@
          </tr></table>
          <div id="legend" class="legend">
          <div class="bar"></div>
-         <div>Population (thousand)</div>
+         <div>Population (in thousands)</div>
       </div>
     </div>
       <div id="LAdata">
-            <h2 id="laname">Hover over a Borough</h2>
+            <h2 id="laname"> Hover over a Borough</h2>
                 <div id="LAchart1"></div>
             </div>
-    
+
+     <div class='map-overlay-lower'>
+        <p class="cityfly">Zoom to: <a href="#" class="citylink" id="dockland">the London Docklands</a> &nbsp;
+             </p>
+        </div>
     </div>
-    
-    
-    
-    
+
    
 <script>
         
@@ -179,8 +185,8 @@
     var map = new mapboxgl.Map({
     container: 'map', // container id
     style: 'mapbox://styles/junzhegan/ckp16e6o70s6w18pehw7f0zkr', // stylesheet location
-    center: [-0.25, 51.5],// starting position [lng, lat]
-    zoom: 10 // starting zoom
+    center: [-0.25, 51.5], // starting position [lng, lat]
+    zoom: 9.45 // starting zoom
     });
     
     
@@ -453,7 +459,7 @@
                                 previousID=la[0].id;
                                 map.setFilter('lahighlight', ['==','FID_',la[0].id]);
                                 console.log(la[0].properties.Area);
-                                document.getElementById('laname').innerHTML = "Population change by percentage in " + la[0].properties.CityName;
+                                document.getElementById('laname').innerHTML = "Population percentage change in: " + la[0].properties.CityName;
                                 console.log(la[0].id);
                                 console.log(la)
                                                                
@@ -497,7 +503,29 @@
 
     });
     
-    
+     //Event listener for the zoom to buttons created using a for loop and switch case statement to set lat and long
+var x = document.getElementsByClassName('citylink');
+var i;
+		for (i = 0; i < x.length; i++) {
+			x[i].addEventListener('click', function(e) {
+
+				var lat,long;
+
+				switch(e.target.id) {
+                    case "dockland": long=0.03; lat=51.5; break;
+				
+				}
+
+				map.flyTo({
+					center: [long,lat],
+					zoom: 11,
+					speed: 0.3,
+					pitch: 50
+					});
+			});
+		}
+        
+
     
   </script>
 
