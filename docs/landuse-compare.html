@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Swipe between maps</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<style>
+body {
+overflow: hidden;
+}
+ 
+body * {
+-webkit-touch-callout: none;
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+}
+ 
+.map {
+position: absolute;
+top: 0;
+bottom: 0;
+width: 100%;
+}
+    
+.legend {
+        background-color: #f4f4f4;
+        border: #9ba1a1;
+        border-radius: 3px;
+        bottom: 30px;
+        box-shadow:0 1px 2px rgb(150,159,158);
+        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        padding: 10px;
+        position: absolute;
+        left: 10px;
+        z-index: 1;
+        }
+
+        .legend h4 {
+        margin: 0 0 10px;
+        }
+
+        .legend div span {
+        border-radius: 50%;
+        display: inline-block;
+        height: 10px;
+        margin-right: 5px;
+        width: 10px;
+                }
+    
+.left_title {
+        background-color: #272424;
+        border: #9ba1a1;
+        border-radius: 3px;
+        color: floralwhite;
+        box-shadow:0 1px 2px rgb(150,159,158);
+        font: 15px/20px 'Calibri';
+        position: absolute;
+        padding: 5px;
+        top: 10px; 
+        left: 10px;
+        z-index: 1;
+        }   
+    
+.right_title {
+        background-color: #272424;
+        border: #9ba1a1;
+        border-radius: 3px;
+        color: floralwhite;
+        box-shadow:0 1px 2px rgb(150,159,158);
+        font: 15px/20px 'Calibri';
+        position: absolute;
+        padding: 5px;
+        top: 10px; 
+        right: 10px;
+        z-index: 1;
+        } 
+    
+</style>
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.css" type="text/css">
+<div id="comparison-container">
+<div id="before" class="map"></div>
+<div id="after" class="map"></div>
+</div>
+    
+    
+    <div id="land-legend" class="legend">
+        <h4>Key</h4>
+        <div><span style="background-color: #f7ae26"></span>Residential</div>
+        <div><span style="background-color: #d3d00d"></span>Commercial</div>
+        <div><span style="background-color: #ca7777"></span>Industrial</div>
+        <div><span style="background-color: #68af50"></span>Open Spaces</div>
+        <div><span style="background-color: #0f3cd2"></span>Retail</div>
+        <div><span style="background-color: #6cefd2"></span>Scrub</div>
+
+    </div>
+    
+    
+    <div id="1908" class="left_title">
+        <h4>Land use before 1980</h4>
+    </div>
+    
+    <div id="1908" class="right_title">
+        <h4>Land use in 2021</h4>
+    </div>
+    
+<script>
+    
+    mapboxgl.accessToken = 'pk.eyJ1IjoiY2hyaXN0aW5hYm90cm9zIiwiYSI6ImNraG5teG82MDJ5NHIydGw2c2plaTdpamwifQ.BMkojxGHEaeIExJ9WreKKQ'; 
+    
+    // Load a new map in the 'map' HTML div
+    var map1980 = new mapboxgl.Map({
+    container: 'before', // container id
+    style: 'mapbox://styles/christinabotros/ckosu4z4b8n7p18og834vt9yi', 
+    center: [0.017835, 51.496869], // starting position [lng, lat]
+    zoom: 13// starting zoom
+    });
+    
+    
+    var map2020 = new mapboxgl.Map({
+    container: 'after', // container id
+    style: 'mapbox://styles/christinabotros/ckorzib657tsp17pb4oqrkj36', 
+    center: [0.017835, 51.496869], // starting position [lng, lat]
+    zoom: 13 // starting zoom
+    });
+    
+
+ 
+// A selector or reference to HTML element
+var container = '#comparison-container';
+ 
+var map = new mapboxgl.Compare(map1980, map2020, container, {
+// Set this to enable comparing two maps by mouse movement:
+// mousemove: true
+});
+</script>
+ 
+</body>
+</html>
