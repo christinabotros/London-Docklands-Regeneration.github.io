@@ -3,7 +3,7 @@ Group 10 Digital Visualisation Project
 
 Website: https://christinabotros.github.io/London-Docklands-Regeneration.github.io/
 
-References 
+# References 
 
 A London Inheritance (2018) ‘London Docklands - A 1976 Strategic Plan’. Available at: 
 https://alondoninheritance.com/london-history/london-docklands-a-1976-strategic-plan/ (Accessed: 18 
