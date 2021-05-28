@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    
+<style>
+body { margin: 0; padding: 0; }
+
+/* Three image containers (use 25% for four, and 50% for two, etc) */
+.column {
+  float: left;
+  width: 33.33%;
+  padding: 5px;
+}
+
+    .h3{
+    font-family: 'Calibri';
+    margin-left: 30px;
+        
+    }
+
+/* Clear floats after image containers */
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.row {
+  display: flex;
+}
+
+.column {
+  flex: 33.33%;
+  padding: 5px;
+}
+    
+</style>
+</head>
+    
+<body>
+
+    <div class="row">
+  <div class="column">
+    <img src="images/Christina.jpg" alt="Snow" style="width:100%">
+    <h3> Christina Botros </h3>
+  </div>
+  <div class="column">
+    <img src="images/Junzhe.jpg.JPG" alt="Forest" style="width:100%">
+    <h3> Junzhe Gan </h3>
+
+  </div>
+  <div class="column">
+    <img src="images/wei.jpg" alt="Mountains" style="width:100%">
+    <h3> Wei Dai </h3>
+
+  </div>
+</div>
+    
+    
+    </body>
+
+
+
+</html>
